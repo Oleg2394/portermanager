@@ -1,10 +1,10 @@
 package ru.netology.domain.manager;
 
-import lombok.NoArgsConstructor;
+
 import ru.netology.domain.Film;
 
 
-@NoArgsConstructor
+
 
 public class PosterManager {
 
