@@ -57,10 +57,8 @@ import static org.mockito.Mockito.*;
         doReturn(toBeReturned).when(repository).findAll();
 
         Film[] expected = new Film[]{film2, film1};
-        manager.add(film1);
-        manager.add(film2);
 
-        assertArrayEquals(expected, manager.getFilms());
+     assertArrayEquals(expected, manager.getFilms());
     }
 
 }
