@@ -49,8 +49,7 @@ class FilmRepositoryTest {
     void shouldRemoveById() {
         repository.save(film1);
         repository.removeById(1);
-        String expected = null;
-        assertEquals(expected, repository.findById(1));
+        assertNull(repository.findById(1));
     }
 
     @Test
@@ -58,9 +57,8 @@ class FilmRepositoryTest {
         repository.save(film1);
         repository.save(film2);
         repository.removeAll();
-        String expected = null;
-        assertEquals(expected, repository.findById(1));
-        assertEquals(expected, repository.findById(2));
+        assertNull(repository.findById(1));
+        assertNull(repository.findById(2));
     }
 
     @Test
