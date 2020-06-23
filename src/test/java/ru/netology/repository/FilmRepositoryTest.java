@@ -1,12 +1,22 @@
-package ru.netology.repository;
+package ru.netology.manager;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import ru.netology.domain.Film;
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import ru.netology.repository.FilmRepository;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
-class FilmRepositoryTest {
-    FilmRepository repository = new FilmRepository();
+@ExtendWith(MockitoExtension.class)
+ class PosterManagerTest {
+    @Mock
+    FilmRepository repository;
+
+    @InjectMocks
+    PosterManager manager = new PosterManager(9);
     Film film1 = new Film(1, "Хищные птицы: Потрясающая история Харли Квинн", "Боевик/Супергеройский фильм", "Image1", 2020);
     Film film2 = new Film(2, "Чудо-женщина: 1984", "Боевик/Приключения", "Image2", 2020);
     Film film3 = new Film(3, "Соник в кино", "Семейный/Комедия", "Image3", 2020);
@@ -18,53 +28,36 @@ class FilmRepositoryTest {
     Film film9 = new Film(9, "Лёд 2", "Романтика/Спорт", "Image9", 2020);
     Film film10 = new Film(10, "Бладшот", "Боевик/Приключения", "Image10", 2020);
 
-
     @Test
-    void shoulSave() {
+    void shouldAdd() {
+        doReturn(new Film[]{film1}).when(repository).findAll();
+        doNothing().when(repository).save(film1);
+
         Film[] expected = new Film[]{film1};
-        repository.save(film1);
-        assertArrayEquals(expected, repository.findAll());
+        manager.add(film1);
+        assertArrayEquals(expected, manager.getFilms());
+        verify(repository, times(1)).save(film1);
+
     }
 
     @Test
-    void shouldReturn() {
-        Film[] expected = new Film[]{film1, film2, film3, film4, film5};
-        repository.save(film1);
-        repository.save(film2);
-        repository.save(film3);
-        repository.save(film4);
-        repository.save(film5);
-        assertArrayEquals(expected, repository.findAll());
+    void shouldReturnLessThenAddByDefault() {
+        Film[] toBeReturned = {film2, film3, film4, film5,film6,film7};
+        doReturn(toBeReturned).when(repository).findAll();
+
+        Film[] expected = new Film[]{film7,film6,film5, film4, film3, film2};
+
+        assertArrayEquals(expected, manager.getFilms());
+        verify(repository).findAll();
     }
 
     @Test
-    void shouldFindById() {
-        repository.save(film1);
-        repository.save(film2);
-        String expected = "Хищные птицы: Потрясающая история Харли Квинн";
-        assertEquals(expected, repository.findById(1).getName());
-    }
+    void shouldGetFilms() {
+        Film[] toBeReturned = {film1, film2};
+        doReturn(toBeReturned).when(repository).findAll();
 
-    @Test
-    void shouldRemoveById() {
-        repository.save(film1);
-        repository.removeById(1);
-        assertNull(repository.findById(1));
-    }
+        Film[] expected = new Film[]{film2, film1};
 
-    @Test
-    void shouldRemoveAll() {
-        repository.save(film1);
-        repository.save(film2);
-        repository.removeAll();
-        assertNull(repository.findById(1));
-        assertNull(repository.findById(2));
+     assertArrayEquals(expected, manager.getFilms());
     }
-
-    @Test
-    void shouldReturnEmptyArray() {
-        assertArrayEquals(new Film[0], repository.findAll());
-    }
-
 }
-
